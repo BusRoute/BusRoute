@@ -1,5 +1,9 @@
 package com.fbafelipe.busroute.busroute;
 
+import android.content.Context;
+
+import com.fbafelipe.busroute.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,5 +31,9 @@ public class Route {
 
 	public String getLongName() {
 		return mLongName;
+	}
+	
+	public String getDescription(Context context) {
+		return context.getString(R.string.route_description, mShortName, mLongName);
 	}
 }
