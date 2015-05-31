@@ -8,7 +8,11 @@ public class ClientException extends Exception {
 		super(cause);
 	}
 
-	public ClientException(int errorCode) {
-		super("Error " + errorCode);
+	public ClientException(String error) {
+		super(error);
+	}
+
+	public ClientException() {
+		super("Unkown error");
 	}
 }

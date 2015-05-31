@@ -1,0 +1,19 @@
+{
+    "rows": [
+        {
+            "id": 1,
+            "shortName": "111",
+            "longName": "Test Route",
+            "lastModifiedDate": "2009-10-26T02:00:00+0000",
+            "agencyId": 9
+        },
+        {
+            "id": 2,
+            "shortName": "222",
+            "longName": "Test Route 2",
+            "lastModifiedDate": "2012-07-23T03:00:00+0000",
+            "agencyId": 9
+        }
+    ],
+    "rowsAffected": 0
+}

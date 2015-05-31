@@ -1,16 +1,13 @@
 package com.fbafelipe.busroute.test.busroute;
 
-import android.preference.PreferenceActivity;
 import android.test.AndroidTestCase;
 import android.util.Base64;
 
-import com.fbafelipe.busroute.Utils;
 import com.fbafelipe.busroute.busroute.ClientException;
 import com.fbafelipe.busroute.busroute.ClientHeader;
 import com.fbafelipe.busroute.busroute.ClientImpl;
 
 import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
@@ -18,18 +15,15 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.message.BasicStatusLine;
-import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
@@ -58,7 +52,7 @@ public class ClientTest extends AndroidTestCase {
 			@Override
 			public HttpResponse answer(InvocationOnMock invocationOnMock) throws Throwable {
 				HttpPost request = extractRequest(invocationOnMock, header);
-				String body = getBody(request);
+				String body = EntityUtils.toString(request.getEntity());
 				JSONObject bodyJson = new JSONObject(body);
 				
 				assertEquals("testValue", bodyJson.getString("testKey"));
@@ -116,28 +110,6 @@ public class ClientTest extends AndroidTestCase {
 			fail("ClientException not thrown");
 		}
 		catch (ClientException error) {}
-	}
-	
-	private String getBody(HttpPost request) throws IOException {
-		HttpEntity entity = request.getEntity();
-		Header encodingHeader = entity.getContentEncoding();
-		
-		String encoding = encodingHeader != null ? encodingHeader.getValue() : "UTF-8";
-		
-		int length = (int) entity.getContentLength();
-		assertTrue(length >= 0);
-
-		DataInputStream input = null;
-		try {
-			input = new DataInputStream(entity.getContent());
-			
-			byte buffer[] = new byte[length];
-			input.readFully(buffer);
-			return new String(buffer, encoding);
-		}
-		finally {
-			Utils.safeClose(input);
-		}
 	}
 	
 	private HttpPost extractRequest(InvocationOnMock invocationOnMock, ClientHeader header) {
