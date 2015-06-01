@@ -9,7 +9,8 @@
 		android:id="@+id/search_route"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:queryHint="@string/search_route" />
+		android:queryHint="@string/search_route"
+		android:iconifiedByDefault="false" />
 	
 	<ListView
 		android:id="@+id/route_list"
