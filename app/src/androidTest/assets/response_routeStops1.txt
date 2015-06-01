@@ -1,0 +1,23 @@
+{
+    "rows": [
+        {
+            "id": 3,
+            "name": "Stop 1",
+            "sequence": 1,
+            "route_id": 1
+        },
+        {
+            "id": 4,
+            "name": "Stop 2",
+            "sequence": 2,
+            "route_id": 1
+        },
+        {
+            "id": 5,
+            "name": "Stop 3",
+            "sequence": 3,
+            "route_id": 1
+        }
+    ],
+    "rowsAffected": 0
+}
