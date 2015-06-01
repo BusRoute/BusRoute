@@ -80,14 +80,13 @@ public class MainActivity extends ActionBarActivity implements FragmentManager.O
 		Fragment fragment = new RouteDetailsFragment();
 		
 		Bundle arguments = new Bundle();
-		arguments.putInt(RouteDetailsFragment.EXTRA_ROUTE_ID, route.getId());
-		arguments.putString(RouteDetailsFragment.EXTRA_ROUTE_DESCRIPTION, route.getDescription(this));
+		arguments.putParcelable(RouteDetailsFragment.EXTRA_ROUTE, route);
 		fragment.setArguments(arguments);
 
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.replace(R.id.fragment_container, fragment);
 		fragmentTransaction.addToBackStack(null);
-		fragmentTransaction.commitAllowingStateLoss();
+		fragmentTransaction.commit();
 	}
 }

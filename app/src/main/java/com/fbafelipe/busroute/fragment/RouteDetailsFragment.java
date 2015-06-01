@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.fbafelipe.busroute.R;
 import com.fbafelipe.busroute.Utils;
 import com.fbafelipe.busroute.adapter.RouteStopAdapter;
 import com.fbafelipe.busroute.busroute.BusRouteManager;
+import com.fbafelipe.busroute.busroute.Route;
 import com.fbafelipe.busroute.busroute.RouteDetails;
 import com.fbafelipe.busroute.task.FetchRouteDetailsTask;
 
@@ -25,11 +25,9 @@ import com.fbafelipe.busroute.task.FetchRouteDetailsTask;
  * Created by felipe on 5/31/15.
  */
 public class RouteDetailsFragment extends Fragment implements FetchRouteDetailsTask.Callback {
-	public static String EXTRA_ROUTE_ID = "routeId";
-	public static String EXTRA_ROUTE_DESCRIPTION = "routeDescription";
+	public static String EXTRA_ROUTE = "route";
 	
-	private int mRouteId;
-	private String mRouteDescription;
+	private Route mRoute;
 	
 	private View mRootView;
 	private ListView mStopsListView;
@@ -44,8 +42,7 @@ public class RouteDetailsFragment extends Fragment implements FetchRouteDetailsT
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		mRouteId = getArguments().getInt(EXTRA_ROUTE_ID);
-		mRouteDescription = getArguments().getString(EXTRA_ROUTE_DESCRIPTION);
+		mRoute = getArguments().getParcelable(EXTRA_ROUTE);
 	}
 
 	@Override
@@ -66,7 +63,7 @@ public class RouteDetailsFragment extends Fragment implements FetchRouteDetailsT
 		super.onResume();
 
 		ActionBarActivity activity = (ActionBarActivity) getActivity();
-		activity.getSupportActionBar().setTitle(mRouteDescription);
+		activity.getSupportActionBar().setTitle(mRoute.getDescription(activity));
 
 		fetchDetails();
 	}
@@ -93,7 +90,7 @@ public class RouteDetailsFragment extends Fragment implements FetchRouteDetailsT
 	private void fetchDetails() {
 		BusRouteManager manager = ((MainActivity) getActivity()).getBusRouteManager();
 		mTask = new FetchRouteDetailsTask(manager, this);
-		mTask.execute(mRouteId);
+		mTask.execute(mRoute.getId());
 	}
 
 	@Override

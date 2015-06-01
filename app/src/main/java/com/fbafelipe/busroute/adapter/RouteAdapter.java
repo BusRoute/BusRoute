@@ -23,6 +23,10 @@ public class RouteAdapter extends BaseAdapter {
 		mRoutes = routes;
 		notifyDataSetChanged();
 	}
+	
+	public List<Route> getRoutes() {
+		return mRoutes;
+	}
 
 	@Override
 	public int getCount() {

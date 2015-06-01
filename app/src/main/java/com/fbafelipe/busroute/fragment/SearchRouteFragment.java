@@ -1,9 +1,7 @@
 package com.fbafelipe.busroute.fragment;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -21,6 +19,7 @@ import com.fbafelipe.busroute.busroute.BusRouteManager;
 import com.fbafelipe.busroute.busroute.Route;
 import com.fbafelipe.busroute.task.FetchRoutesTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +27,8 @@ import java.util.List;
  */
 public class SearchRouteFragment extends Fragment implements SearchView.OnQueryTextListener,
 		FetchRoutesTask.Callback, ListView.OnItemClickListener {
+	
+	private static final String STATE_ROUTES = "routes";
 	
 	private SearchView mSearchView;
 	private ListView mListView;
@@ -37,19 +38,40 @@ public class SearchRouteFragment extends Fragment implements SearchView.OnQueryT
 	private ProgressDialog mProgressDialog;
 	
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		mAdapter = new RouteAdapter();
+		
+		if (savedInstanceState != null) {
+			List<Route> routes = savedInstanceState.getParcelableArrayList(STATE_ROUTES);
+			if (routes != null)
+				mAdapter.setRoutes(routes);
+		}
+	}
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_search_route, container, false);
 
 		mSearchView = (SearchView) rootView.findViewById(R.id.search_route);
 		mListView = (ListView) rootView.findViewById(R.id.route_list);
 		
-		mAdapter = new RouteAdapter();
 		mListView.setAdapter(mAdapter);
-
 		mSearchView.setOnQueryTextListener(this);
 		mListView.setOnItemClickListener(this);
 		
 		return rootView;
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle instanceState) {
+		super.onSaveInstanceState(instanceState);
+
+		ArrayList<Route> routes = new ArrayList<>();
+		routes.addAll(mAdapter.getRoutes());
+		
+		instanceState.putParcelableArrayList(STATE_ROUTES, routes);
 	}
 	
 	@Override
