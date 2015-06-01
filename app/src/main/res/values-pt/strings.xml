@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">BusRoute</string>
+	<string name="search_route">Procurar Rota</string>
+	<string name="route_description">%1$s - %2$s</string>
+	<string name="route_stop">%1$d. %2$s</string>
+	<string name="header_stops">Pontos</string>
+	<string name="header_departures">Saidas</string>
+	<string name="loading">Carregando...</string>
+	<string name="cancel">Cancelar</string>
+	<string name="error">Erro</string>
+	<string name="search_route_error">Erro ao procurar rotas. Por favor verifique sua conexão com a internet.</string>
+	<string name="ok">OK</string>
+
+	<string name="weekday">Dia de semana</string>
+	<string name="saturday">Sábado</string>
+	<string name="sunday">Domingo</string>
+</resources>

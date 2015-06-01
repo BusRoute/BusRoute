@@ -1,8 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">BusRoute</string>
 	<string name="search_route">Search Route</string>
 	<string name="route_description">%1$s - %2$s</string>
-	<string name="route_stop">%1$d - %2$s</string>
+	<string name="route_stop">%1$d. %2$s</string>
 	<string name="header_stops">Stops</string>
 	<string name="header_departures">Departures</string>
 	<string name="loading">Loading...</string>
