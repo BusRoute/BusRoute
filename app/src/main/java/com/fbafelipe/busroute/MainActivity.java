@@ -14,7 +14,7 @@ import com.fbafelipe.busroute.fragment.RouteDetailsFragment;
 import com.fbafelipe.busroute.fragment.SearchRouteFragment;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements FragmentManager.OnBackStackChangedListener {
 	private BusRouteManager mManager;
 	
 	@Override
@@ -23,7 +23,9 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_main);
 
 		mManager = new BusRouteManager();
-
+		
+		getFragmentManager().addOnBackStackChangedListener(this);
+		
 		if (savedInstanceState == null)
 			setupSearchRouteFragment();
 	}
@@ -36,7 +38,29 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				onBackPressed();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		FragmentManager fragmentManager = getFragmentManager();
+		if (fragmentManager.getBackStackEntryCount() > 0) {
+			fragmentManager.popBackStack();
+			return;
+		}
+		
+		super.onBackPressed();
+	}
+	
+	@Override
+	public void onBackStackChanged() {
+		getSupportActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount() > 0);
 	}
 	
 	public BusRouteManager getBusRouteManager() {
@@ -56,13 +80,14 @@ public class MainActivity extends ActionBarActivity {
 		Fragment fragment = new RouteDetailsFragment();
 		
 		Bundle arguments = new Bundle();
-		arguments.putInt(RouteDetailsFragment.EXTRA_ROUTE, route.getId());
+		arguments.putInt(RouteDetailsFragment.EXTRA_ROUTE_ID, route.getId());
+		arguments.putString(RouteDetailsFragment.EXTRA_ROUTE_DESCRIPTION, route.getDescription(this));
 		fragment.setArguments(arguments);
 
 		FragmentManager fragmentManager = getFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.replace(R.id.fragment_container, fragment);
 		fragmentTransaction.addToBackStack(null);
-		fragmentTransaction.add(R.id.fragment_container, fragment);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 	}
 }

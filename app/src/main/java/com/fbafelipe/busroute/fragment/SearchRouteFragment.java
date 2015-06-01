@@ -2,25 +2,25 @@ package com.fbafelipe.busroute.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.fbafelipe.busroute.MainActivity;
 import com.fbafelipe.busroute.R;
+import com.fbafelipe.busroute.Utils;
 import com.fbafelipe.busroute.adapter.RouteAdapter;
 import com.fbafelipe.busroute.busroute.BusRouteManager;
 import com.fbafelipe.busroute.busroute.Route;
 import com.fbafelipe.busroute.task.FetchRoutesTask;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,15 +33,8 @@ public class SearchRouteFragment extends Fragment implements SearchView.OnQueryT
 	private ListView mListView;
 	private RouteAdapter mAdapter;
 	
-	private BusRouteManager mManager;
 	private FetchRoutesTask mTask;
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
-		mManager = ((MainActivity) activity).getBusRouteManager();
-	}
+	private ProgressDialog mProgressDialog;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,19 +64,32 @@ public class SearchRouteFragment extends Fragment implements SearchView.OnQueryT
 	public void onPause() {
 		super.onPause();
 
-		if (mTask != null) {
+		cancelTask();
+	}
+	
+	private void cancelTask() {
+		if (mTask != null)
 			mTask.cancel(true);
-			mTask = null;
+
+		taskFinished();
+	}
+	
+	private void taskFinished() {
+		mTask = null;
+		
+		if (mProgressDialog != null) {
+			mProgressDialog.dismiss();
+			mProgressDialog = null;
 		}
 	}
 
 	@Override
 	public boolean onQueryTextSubmit(String query) {
-		if (mTask != null) {
-			mTask.cancel(true);
-		}
+		cancelTask();
+
+		BusRouteManager manager = ((MainActivity) getActivity()).getBusRouteManager();
 		
-		mTask = new FetchRoutesTask(mManager, this);
+		mTask = new FetchRoutesTask(manager, this);
 		mTask.execute(query);
 		
 		mSearchView.clearFocus();
@@ -95,21 +101,29 @@ public class SearchRouteFragment extends Fragment implements SearchView.OnQueryT
 	public boolean onQueryTextChange(String newText) {
 		return false;
 	}
-
-
+	
 	@Override
 	public void onFetchRoutesStart() {
-		// TODO show loading animation
+		mProgressDialog = Utils.createLoadingDialog(getActivity(), new Runnable() {
+			@Override
+			public void run() {
+				mProgressDialog = null;
+				cancelTask();
+			}
+		});
+		mProgressDialog.show();
 	}
 
 	@Override
 	public void onFetchRoutesSuccess(List<Route> routes) {
+		taskFinished();
 		mAdapter.setRoutes(routes);
 	}
 
 	@Override
 	public void onFetchRoutesError() {
-		// TODO show error message
+		taskFinished();
+		Utils.showAlert(getActivity(), R.string.error, R.string.search_route_error, R.string.ok);
 	}
 
 	@Override
